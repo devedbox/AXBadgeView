@@ -13,6 +13,10 @@
 		0137782E1C15160C008CF34F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0137782C1C15160C008CF34F /* Main.storyboard */; };
 		013778301C15160C008CF34F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0137782F1C15160C008CF34F /* Assets.xcassets */; };
 		013778331C15160C008CF34F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 013778311C15160C008CF34F /* LaunchScreen.storyboard */; };
+		0137783C1C151745008CF34F /* AXBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0137783B1C151745008CF34F /* AXBadgeView.m */; };
+		013778401C156AAB008CF34F /* UIView+AXBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0137783F1C156AAB008CF34F /* UIView+AXBadgeView.m */; };
+		013778431C156C5E008CF34F /* UIBarButtonItem+AXBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 013778421C156C5E008CF34F /* UIBarButtonItem+AXBadgeView.m */; };
+		013778461C156C75008CF34F /* UITabBarItem+AXBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 013778451C156C75008CF34F /* UITabBarItem+AXBadgeView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +30,15 @@
 		0137782F1C15160C008CF34F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		013778321C15160C008CF34F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		013778341C15160C008CF34F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0137783A1C151745008CF34F /* AXBadgeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AXBadgeView.h; path = AXBadgeView/AXBadgeView.h; sourceTree = "<group>"; };
+		0137783B1C151745008CF34F /* AXBadgeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AXBadgeView.m; path = AXBadgeView/AXBadgeView.m; sourceTree = "<group>"; };
+		0137783E1C156AAB008CF34F /* UIView+AXBadgeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIView+AXBadgeView.h"; path = "AXBadgeView/UIView+AXBadgeView.h"; sourceTree = "<group>"; };
+		0137783F1C156AAB008CF34F /* UIView+AXBadgeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIView+AXBadgeView.m"; path = "AXBadgeView/UIView+AXBadgeView.m"; sourceTree = "<group>"; };
+		013778411C156C5E008CF34F /* UIBarButtonItem+AXBadgeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIBarButtonItem+AXBadgeView.h"; path = "AXBadgeView/UIBarButtonItem+AXBadgeView.h"; sourceTree = "<group>"; };
+		013778421C156C5E008CF34F /* UIBarButtonItem+AXBadgeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIBarButtonItem+AXBadgeView.m"; path = "AXBadgeView/UIBarButtonItem+AXBadgeView.m"; sourceTree = "<group>"; };
+		013778441C156C75008CF34F /* UITabBarItem+AXBadgeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UITabBarItem+AXBadgeView.h"; path = "AXBadgeView/UITabBarItem+AXBadgeView.h"; sourceTree = "<group>"; };
+		013778451C156C75008CF34F /* UITabBarItem+AXBadgeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UITabBarItem+AXBadgeView.m"; path = "AXBadgeView/UITabBarItem+AXBadgeView.m"; sourceTree = "<group>"; };
+		013778471C156D5B008CF34F /* AXBadgeKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AXBadgeKit.h; path = AXBadgeView/AXBadgeKit.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +76,7 @@
 				013778291C15160C008CF34F /* ViewController.h */,
 				0137782A1C15160C008CF34F /* ViewController.m */,
 				0137782C1C15160C008CF34F /* Main.storyboard */,
+				0137783D1C151748008CF34F /* AXBadgeView */,
 				0137782F1C15160C008CF34F /* Assets.xcassets */,
 				013778311C15160C008CF34F /* LaunchScreen.storyboard */,
 				013778341C15160C008CF34F /* Info.plist */,
@@ -77,6 +91,22 @@
 				013778241C15160C008CF34F /* main.m */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		0137783D1C151748008CF34F /* AXBadgeView */ = {
+			isa = PBXGroup;
+			children = (
+				013778471C156D5B008CF34F /* AXBadgeKit.h */,
+				0137783A1C151745008CF34F /* AXBadgeView.h */,
+				0137783B1C151745008CF34F /* AXBadgeView.m */,
+				0137783E1C156AAB008CF34F /* UIView+AXBadgeView.h */,
+				0137783F1C156AAB008CF34F /* UIView+AXBadgeView.m */,
+				013778441C156C75008CF34F /* UITabBarItem+AXBadgeView.h */,
+				013778451C156C75008CF34F /* UITabBarItem+AXBadgeView.m */,
+				013778411C156C5E008CF34F /* UIBarButtonItem+AXBadgeView.h */,
+				013778421C156C5E008CF34F /* UIBarButtonItem+AXBadgeView.m */,
+			);
+			name = AXBadgeView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -149,9 +179,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				013778401C156AAB008CF34F /* UIView+AXBadgeView.m in Sources */,
+				013778461C156C75008CF34F /* UITabBarItem+AXBadgeView.m in Sources */,
 				0137782B1C15160C008CF34F /* ViewController.m in Sources */,
+				013778431C156C5E008CF34F /* UIBarButtonItem+AXBadgeView.m in Sources */,
 				013778281C15160C008CF34F /* AppDelegate.m in Sources */,
 				013778251C15160C008CF34F /* main.m in Sources */,
+				0137783C1C151745008CF34F /* AXBadgeView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
