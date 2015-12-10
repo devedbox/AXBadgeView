@@ -38,7 +38,15 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [self.navigationItem.leftBarButtonItem showBadge:YES];
-    self.navigationItem.leftBarButtonItem.badgeView.style = AXBadgeViewNew;
+//    self.navigationItem.leftBarButtonItem.badgeView.style = AXBadgeViewNew;
+    self.navigationItem.leftBarButtonItem.badgeView.style = AXBadgeViewNumber;
+    self.navigationItem.leftBarButtonItem.badgeView.text = @"2";
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        self.navigationItem.leftBarButtonItem.badgeView.text = @"3";
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            self.navigationItem.leftBarButtonItem.badgeView.text = @"4";
+        });
+    });
 }
 
 - (void)didReceiveMemoryWarning {
@@ -46,4 +54,18 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (IBAction)didTapLeftItem:(UIBarButtonItem *)sender {
+    if (sender.badgeView.hidden) {
+        [sender showBadge:YES];
+        self.navigationItem.leftBarButtonItem.badgeView.text = @"2";
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            self.navigationItem.leftBarButtonItem.badgeView.text = @"3";
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                self.navigationItem.leftBarButtonItem.badgeView.text = @"4";
+            });
+        });
+    } else {
+        [sender clearBadge:YES];
+    }
+}
 @end

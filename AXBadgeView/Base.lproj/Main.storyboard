@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9060" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="CVP-6a-Vv1">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="CVP-6a-Vv1">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9051"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
@@ -19,7 +19,6 @@
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Bko-Sf-Osj">
                                 <rect key="frame" x="250" y="250" width="100" height="100"/>
-                                <animations/>
                                 <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="100" id="BGk-PW-hYf"/>
@@ -27,7 +26,6 @@
                                 </constraints>
                             </view>
                         </subviews>
-                        <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="Bko-Sf-Osj" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="5qP-Pv-tPK"/>
@@ -35,7 +33,11 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="keE-9I-jww">
-                        <barButtonItem key="leftBarButtonItem" title="Test" id="acm-Qj-Zdt"/>
+                        <barButtonItem key="leftBarButtonItem" title="Test" id="acm-Qj-Zdt">
+                            <connections>
+                                <action selector="didTapLeftItem:" destination="BYZ-38-t0r" id="dnL-jo-8Kh"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="heightConstant" destination="BGk-PW-hYf" id="zQE-OA-ekw"/>
@@ -54,7 +56,6 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="qRj-3o-jcj">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <animations/>
                     </navigationBar>
                     <connections>
                         <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="TBs-tn-shv"/>

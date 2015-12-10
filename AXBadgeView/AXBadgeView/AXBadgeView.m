@@ -8,6 +8,23 @@
 
 #import "AXBadgeView.h"
 
+#define kAXBadgeViewBreatheAnimationKey     @"breathe"
+#define kAXBadgeViewRotateAnimationKey      @"rotate"
+#define kAXBadgeViewShakeAnimationKey       @"shake"
+#define kAXBadgeViewScaleAnimationKey       @"scale"
+#define kAXBadgeViewBounceAnimationKey      @"bounce"
+
+typedef NS_ENUM(NSUInteger, AXAxis)
+{
+    AXAxisX = 0,
+    AXAxisY,
+    AXAxisZ
+};
+
+// Degrees to radians
+#define DEGREES_TO_RADIANS(angle) ((angle) / 180.0 * M_PI)
+#define RADIANS_TO_DEGREES(radians) ((radians) * (180.0 / M_PI))
+
 @interface AXBadgeView ()
 {
     NSString *_textStorage;
@@ -50,9 +67,11 @@
     _offsets = CGPointMake(CGFLOAT_MAX, CGFLOAT_MIN);
     _textStorage = @"";
     self.style = AXBadgeViewNormal;
+    self.animation = AXBadgeViewAnimationNone;
     _hideOnZero = YES;
     _minSize = CGSizeMake(12.0, 12.0);
     [self addObserver:self forKeyPath:@"text" options:NSKeyValueObservingOptionNew context:nil];
+    self.hidden = YES;
 }
 
 - (void)dealloc {
@@ -151,6 +170,9 @@
     _widthLayout.constant = CGRectGetWidth(self.bounds);
     _heightLayout.constant = CGRectGetHeight(self.bounds);
     [self setNeedsLayout];
+    if (self.isVisible) {
+        [self showAnimated:YES];
+    }
 }
 
 #pragma mark - Getters
@@ -166,10 +188,35 @@
     return _heightLayout;
 }
 
+- (BOOL)isVisible {
+    return !self.hidden;
+}
+
 #pragma mark - Setters
 - (void)setStyle:(AXBadgeViewStyle)style {
     _style = style;
     [self setText:_textStorage];
+}
+
+- (void)setAnimation:(AXBadgeViewAnimation)animation {
+    _animation = animation;
+    switch (_animation) {
+        case AXBadgeViewAnimationBreathe:
+            [self.layer addAnimation:[self breathingAnimationWithDuration:1.2] forKey:kAXBadgeViewBreatheAnimationKey];
+            break;
+        case AXBadgeViewAnimationBounce:
+            [self.layer addAnimation:[self bounceAnimationWithRepeat:CGFLOAT_MAX duration:0.8 forLayer:self.layer] forKey:kAXBadgeViewBounceAnimationKey];
+            break;
+        case AXBadgeViewAnimationScale:
+            [self.layer addAnimation:[self scaleAnimationFrom:1.2 toScale:0.8 duration:0.8 repeat:MAXFLOAT] forKey:kAXBadgeViewScaleAnimationKey];
+            break;
+        case AXBadgeViewAnimationShake:
+            [self.layer addAnimation:[self shakeAnimationWithRepeat:CGFLOAT_MAX duration:0.8 forLayer:self.layer] forKey:kAXBadgeViewShakeAnimationKey];
+            break;
+        default:
+            [self.layer removeAllAnimations];
+            break;
+    }
 }
 
 - (void)setOffsets:(CGPoint)offsets {
@@ -211,13 +258,16 @@
 }
 
 #pragma mark - Public
-
 - (void)showAnimated:(BOOL)animated {
     if (!_attachedView) return;
     [_attachedView addSubview:self];
+    [_attachedView bringSubviewToFront:self];
+    if (self.hidden) {
+        self.hidden = NO;
+    }
     self.transform = CGAffineTransformMakeScale(.0, .0);
     if (animated) {
-        [UIView animateWithDuration:0.5 delay:.0 usingSpringWithDamping:0.7 initialSpringVelocity:0.7 options:7 animations:^{
+        [UIView animateWithDuration:0.5 delay:.0 usingSpringWithDamping:0.6 initialSpringVelocity:0.6 options:7 animations:^{
             self.transform = CGAffineTransformIdentity;
         } completion:nil];
     } else {
@@ -236,12 +286,171 @@
             self.alpha = 0.0;
         } completion:^(BOOL finished) {
             if (finished) {
-                [self removeFromSuperview];
+                self.hidden = YES;
                 self.alpha = 1.0;
             }
         }];
     } else {
-        [self removeFromSuperview];
+        self.hidden = YES;
     }
+}
+
+#pragma mark - Private
+/**
+ *  breathing forever
+ *
+ *  @param time duritaion, from clear to fully seen
+ *
+ *  @return animation obj
+ */
+- (CABasicAnimation *)breathingAnimationWithDuration:(CGFloat)duration
+{
+    CABasicAnimation *animation=[CABasicAnimation animationWithKeyPath:@"opacity"];
+    animation.fromValue=[NSNumber numberWithFloat:1.0];
+    animation.toValue=[NSNumber numberWithFloat:0.1];
+    animation.autoreverses=YES;
+    animation.duration=duration;
+    animation.repeatCount=FLT_MAX;
+    animation.removedOnCompletion=NO;
+    animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
+    animation.fillMode=kCAFillModeForwards;
+    return animation;
+}
+
+/**
+ *  breathing with fixed repeated times
+ *
+ *  @param repeatTimes times
+ *  @param time        duritaion, from clear to fully seen
+ *
+ *  @return animation obj
+ */
+- (CABasicAnimation *)breathingAnimationWithRepeat:(CGFloat)repeating duration:(CGFloat)duration
+{
+    CABasicAnimation *animation=[CABasicAnimation animationWithKeyPath:@"opacity"];
+    animation.fromValue=[NSNumber numberWithFloat:1.0];
+    animation.toValue=[NSNumber numberWithFloat:0.4];
+    animation.repeatCount=repeating;
+    animation.duration=duration;
+    animation.removedOnCompletion=NO;
+    animation.fillMode=kCAFillModeForwards;
+    animation.timingFunction=[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
+    animation.autoreverses=YES;
+    return  animation;
+}
+
+/**
+ *  //rotate
+ *
+ *  @param dur         duration
+ *  @param degree      rotate degree in radian(弧度)
+ *  @param axis        axis
+ *  @param repeatCount repeat count
+ *
+ *  @return animation obj
+ */
+- (CABasicAnimation *)rotationAnimationWithDuration:(CGFloat)duration degree:(CGFloat)degree direction:(AXAxis)axis repeatCount:(NSUInteger)repeatCount
+{
+    CABasicAnimation* animation;
+    NSArray *axisArr = @[@"transform.rotation.x", @"transform.rotation.y", @"transform.rotation.z"];
+    animation = [CABasicAnimation animationWithKeyPath:axisArr[axis]];
+    animation.fromValue = [NSNumber numberWithFloat:0];
+    animation.toValue= [NSNumber numberWithFloat:degree];
+    animation.duration= duration;
+    animation.autoreverses= NO;
+    animation.cumulative= YES;
+    animation.removedOnCompletion=NO;
+    animation.fillMode=kCAFillModeForwards;
+    animation.repeatCount= repeatCount;
+    animation.delegate= self;
+    
+    return animation;
+}
+
+/**
+ *  scale animation
+ *
+ *  @param fromScale   the original scale value, 1.0 by default
+ *  @param toScale     target scale
+ *  @param time        duration
+ *  @param repeatTimes repeat counts
+ *
+ *  @return animaiton obj
+ */
+- (CABasicAnimation *)scaleAnimationFrom:(CGFloat)fromScale toScale:(CGFloat)toScale duration:(float)duration repeat:(float)repeating
+{
+    CABasicAnimation *animation=[CABasicAnimation animationWithKeyPath:@"transform.scale"];
+    animation.fromValue = @(fromScale);
+    animation.toValue = @(toScale);
+    animation.duration = duration;
+    animation.autoreverses = YES;
+    animation.repeatCount = repeating;
+    animation.removedOnCompletion = NO;
+    animation.fillMode = kCAFillModeForwards;
+    return animation;
+}
+
+/**
+ *  shake
+ *
+ *  @param repeatTimes time
+ *  @param time        duration
+ *  @param obj         always be CALayer
+ *  @return aniamtion obj
+ */
+- (CAKeyframeAnimation *)shakeAnimationWithRepeat:(CGFloat)repeating duration:(CGFloat)duration forLayer:(CALayer *)layer
+{
+    CGPoint originPos = CGPointZero;
+    CGSize originSize = CGSizeZero;
+    if ([layer isKindOfClass:[CALayer class]]) {
+        originPos = [layer position];
+        originSize = [layer bounds].size;
+    }
+    CGFloat hOffset = originSize.width / 4;
+    CAKeyframeAnimation* anim=[CAKeyframeAnimation animation];
+    anim.keyPath=@"transform";
+    anim.values=@[
+                  [NSValue valueWithCATransform3D:CATransform3DMakeTranslation(0, 0, 0)],
+                  [NSValue valueWithCATransform3D:CATransform3DMakeTranslation(-hOffset, 0, 0)],
+                  [NSValue valueWithCATransform3D:CATransform3DMakeTranslation(0, 0, 0)],
+                  [NSValue valueWithCATransform3D:CATransform3DMakeTranslation(hOffset, 0, 0)],
+                  [NSValue valueWithCATransform3D:CATransform3DMakeTranslation(0, 0, 0)]
+                  ];
+    anim.repeatCount=repeating;
+    anim.duration=duration;
+    anim.fillMode = kCAFillModeForwards;
+    return anim;
+}
+
+/**
+ *  bounce
+ *
+ *  @param repeatTimes time
+ *  @param time        duration
+ *  @param obj         always be CALayer
+ *  @return aniamtion obj
+ */
+- (CAKeyframeAnimation *)bounceAnimationWithRepeat:(CGFloat)repeating duration:(CGFloat)duration forLayer:(CALayer *)layer
+{
+    CGPoint originPos = CGPointZero;
+    CGSize originSize = CGSizeZero;
+    if ([layer isKindOfClass:[CALayer class]]) {
+        originPos = [layer position];
+        originSize = [layer bounds].size;
+    }
+    CGFloat hOffset = originSize.height / 4;
+    CAKeyframeAnimation* anim=[CAKeyframeAnimation animation];
+    anim.keyPath=@"transform";
+    anim.values=@[
+                  [NSValue valueWithCATransform3D:CATransform3DMakeTranslation(0, 0, 0)],
+                  [NSValue valueWithCATransform3D:CATransform3DMakeTranslation(0, -hOffset, 0)],
+                  [NSValue valueWithCATransform3D:CATransform3DMakeTranslation(0, 0, 0)],
+                  [NSValue valueWithCATransform3D:CATransform3DMakeTranslation(0, hOffset, 0)],
+                  [NSValue valueWithCATransform3D:CATransform3DMakeTranslation(0, 0, 0)]
+                  ];
+    anim.repeatCount=repeating;
+    anim.duration=duration;
+    anim.fillMode = kCAFillModeForwards;
+    return anim;
 }
 @end

@@ -18,6 +18,20 @@ typedef NS_ENUM(NSUInteger, AXBadgeViewStyle) {
     /// New shows a new text.
     AXBadgeViewNew
 };
+/// Animation type.
+typedef NS_ENUM(NSUInteger, AXBadgeViewAnimation)
+{
+    /// Animation none, badge view stay still.
+    AXBadgeViewAnimationNone = 0,
+    /// Animation scale.
+    AXBadgeViewAnimationScale,
+    /// Animation shake.
+    AXBadgeViewAnimationShake,
+    /// Animation bounce.
+    AXBadgeViewAnimationBounce,
+    /// Animation breathe.
+    AXBadgeViewAnimationBreathe
+};
 ///
 /// AXBadgeView
 ///
@@ -26,12 +40,16 @@ typedef NS_ENUM(NSUInteger, AXBadgeViewStyle) {
 @property(weak, nonatomic) UIView *attachedView;
 /// Style of badge view. Defaults to AXBadgeViewNormal.
 @property(assign, nonatomic) AXBadgeViewStyle style UI_APPEARANCE_SELECTOR;
+/// Animation type of badge view. Defaults to None.
+@property(assign, nonatomic) AXBadgeViewAnimation animation UI_APPEARANCE_SELECTOR;
 /// Offsets, Defaults to (CGFLOAT_MAX, CGFLOAT_MIN).
 @property(assign, nonatomic) CGPoint offsets UI_APPEARANCE_SELECTOR;
 /// Hide on zero content. Defaults to YES
 @property(assign, nonatomic) BOOL hideOnZero;
 /// Min size. Defaults to {12.0, 12.0}.
 @property(assign, nonatomic) CGSize minSize UI_APPEARANCE_SELECTOR;
+/// Is badge visible.
+@property(readonly, nonatomic, getter=isVisible) BOOL visible;
 /// Show badge view with animation.
 ///
 /// @param animated show badge with or without animation.
