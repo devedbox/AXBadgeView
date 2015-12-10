@@ -50,6 +50,8 @@ typedef NS_ENUM(NSUInteger, AXBadgeViewAnimation)
 @property(assign, nonatomic) CGSize minSize UI_APPEARANCE_SELECTOR;
 /// Is badge visible.
 @property(readonly, nonatomic, getter=isVisible) BOOL visible;
+/// Scale content when set new content to badge label. Defaults to NO.
+@property(assign, nonatomic, getter=isScaleContent) BOOL scaleContent;
 /// Show badge view with animation.
 ///
 /// @param animated show badge with or without animation.

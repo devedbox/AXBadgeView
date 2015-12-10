@@ -69,6 +69,7 @@ typedef NS_ENUM(NSUInteger, AXAxis)
     self.style = AXBadgeViewNormal;
     self.animation = AXBadgeViewAnimationNone;
     _hideOnZero = YES;
+    _scaleContent = NO;
     _minSize = CGSizeMake(12.0, 12.0);
     [self addObserver:self forKeyPath:@"text" options:NSKeyValueObservingOptionNew context:nil];
     self.hidden = YES;
@@ -140,6 +141,7 @@ typedef NS_ENUM(NSUInteger, AXAxis)
         [suview addConstraint:_horizontalLayout];
     }
     [suview setNeedsLayout];
+    [suview bringSubviewToFront:self];
 }
 
 - (void)setText:(NSString *)text {
@@ -171,7 +173,7 @@ typedef NS_ENUM(NSUInteger, AXAxis)
     _heightLayout.constant = CGRectGetHeight(self.bounds);
     [self setNeedsLayout];
     if (self.isVisible) {
-        [self showAnimated:YES];
+        if (_scaleContent) [self showAnimated:YES];
     }
 }
 
@@ -261,7 +263,6 @@ typedef NS_ENUM(NSUInteger, AXAxis)
 - (void)showAnimated:(BOOL)animated {
     if (!_attachedView) return;
     [_attachedView addSubview:self];
-    [_attachedView bringSubviewToFront:self];
     if (self.hidden) {
         self.hidden = NO;
     }

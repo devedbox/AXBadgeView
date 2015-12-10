@@ -21,6 +21,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     [_showsView showBadge:YES];
+    _showsView.badgeView.animation = AXBadgeViewAnimationScale;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         _showsView.badgeView.offsets = CGPointMake(50, 0);
         _showsView.badgeView.style = AXBadgeViewNew;
@@ -38,7 +39,7 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [self.navigationItem.leftBarButtonItem showBadge:YES];
-//    self.navigationItem.leftBarButtonItem.badgeView.style = AXBadgeViewNew;
+    self.navigationItem.leftBarButtonItem.badgeView.animation = AXBadgeViewAnimationBreathe;
     self.navigationItem.leftBarButtonItem.badgeView.style = AXBadgeViewNumber;
     self.navigationItem.leftBarButtonItem.badgeView.text = @"2";
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -47,6 +48,10 @@
             self.navigationItem.leftBarButtonItem.badgeView.text = @"4";
         });
     });
+    self.navigationController.tabBarItem.badgeView.style = AXBadgeViewNew;
+    self.navigationController.tabBarItem.badgeView.offsets = CGPointMake(self.view.bounds.size.width/4+10, 0);
+    self.navigationController.tabBarItem.badgeView.animation = AXBadgeViewAnimationBreathe;
+    [self.navigationController.tabBarItem showBadge:YES];
 }
 
 - (void)didReceiveMemoryWarning {
