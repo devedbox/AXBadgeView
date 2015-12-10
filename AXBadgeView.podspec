@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
 #
 
 s.name         = "AXBadgeView"
-s.version      = "0.1.0"
+s.version      = "0.1.1"
 s.summary      = "`AXBadgeView` is an iOS customizable badge view."
 
 s.description  = <<-DESC
@@ -79,7 +79,7 @@ s.platform     = :ios, "7.0"
 #  Supports git, hg, bzr, svn and HTTP.
 #
 
-s.source       = { :git => "https://github.com/devedbox/AXBadgeView.git", :tag => "0.1.0" }
+s.source       = { :git => "https://github.com/devedbox/AXBadgeView.git", :tag => "0.1.1" }
 
 
 # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
