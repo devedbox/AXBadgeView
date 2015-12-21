@@ -125,6 +125,8 @@ typedef NS_ENUM(NSUInteger, AXAxis)
     [super willMoveToSuperview:newSuperview];
     if (newSuperview) {
         [self setOffsets:_offsets];
+    } else {
+        self.alpha = 1.0;
     }
 }
 
@@ -190,7 +192,7 @@ typedef NS_ENUM(NSUInteger, AXAxis)
 }
 
 - (BOOL)isVisible {
-    return self.superview && !self.hidden ? YES : NO;
+    return self.superview && !self.hidden && self.alpha != 0 ? YES : NO;
 }
 
 #pragma mark - Setters
