@@ -25,5 +25,6 @@
 
 - (void)clearBadge:(BOOL)animated {
     [self.badgeView hideAnimated:animated];
+    objc_setAssociatedObject(self, @selector(badgeView), nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 @end
