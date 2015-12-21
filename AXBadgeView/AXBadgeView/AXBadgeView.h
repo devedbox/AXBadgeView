@@ -59,7 +59,7 @@ typedef NS_ENUM(NSUInteger, AXBadgeViewAnimation)
 /// Hide badge view.
 ///
 /// @param animated hide badge with or without animation.
-- (void)hideAnimated:(BOOL)animated;
+- (void)hideAnimated:(BOOL)animated completion:(dispatch_block_t)completion;
 /// Show badge view from a attched view.
 ///
 /// @param view a attached view.

@@ -72,7 +72,6 @@ typedef NS_ENUM(NSUInteger, AXAxis)
     _scaleContent = NO;
     _minSize = CGSizeMake(12.0, 12.0);
     [self addObserver:self forKeyPath:@"text" options:NSKeyValueObservingOptionNew context:nil];
-    self.hidden = YES;
 }
 
 - (void)dealloc {
@@ -191,7 +190,7 @@ typedef NS_ENUM(NSUInteger, AXAxis)
 }
 
 - (BOOL)isVisible {
-    return !self.hidden;
+    return self.superview && !self.hidden ? YES : NO;
 }
 
 #pragma mark - Setters
@@ -263,9 +262,6 @@ typedef NS_ENUM(NSUInteger, AXAxis)
 - (void)showAnimated:(BOOL)animated {
     if (!_attachedView) return;
     [_attachedView addSubview:self];
-    if (self.hidden) {
-        self.hidden = NO;
-    }
     self.transform = CGAffineTransformMakeScale(.0, .0);
     if (animated) {
         [UIView animateWithDuration:0.5 delay:.0 usingSpringWithDamping:0.6 initialSpringVelocity:0.6 options:7 animations:^{
@@ -281,18 +277,24 @@ typedef NS_ENUM(NSUInteger, AXAxis)
     [self showAnimated:animated];
 }
 
-- (void)hideAnimated:(BOOL)animated {
+- (void)hideAnimated:(BOOL)animated completion:(dispatch_block_t)completion {
     if (animated) {
         [UIView animateWithDuration:0.25 animations:^{
             self.alpha = 0.0;
         } completion:^(BOOL finished) {
             if (finished) {
-                self.hidden = YES;
+                [self removeFromSuperview];
                 self.alpha = 1.0;
+                if (completion) {
+                    completion();
+                }
             }
         }];
     } else {
-        self.hidden = YES;
+        [self removeFromSuperview];
+        if (completion) {
+            completion();
+        }
     }
 }
 
