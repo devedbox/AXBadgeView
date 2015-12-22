@@ -125,9 +125,8 @@ typedef NS_ENUM(NSUInteger, AXAxis)
     [super willMoveToSuperview:newSuperview];
     if (newSuperview) {
         [self setOffsets:_offsets];
-    } else {
-        self.alpha = 1.0;
     }
+    self.alpha = 1.0;
 }
 
 - (void)didMoveToSuperview {
@@ -262,8 +261,13 @@ typedef NS_ENUM(NSUInteger, AXAxis)
 
 #pragma mark - Public
 - (void)showAnimated:(BOOL)animated {
-    if (!_attachedView) return;
     [_attachedView addSubview:self];
+    if (self.hidden == YES) {
+        self.hidden = NO;
+    }
+    if (self.alpha != 1.0) {
+        self.alpha = 1.0;
+    }
     self.transform = CGAffineTransformMakeScale(.0, .0);
     if (animated) {
         [UIView animateWithDuration:0.5 delay:.0 usingSpringWithDamping:0.6 initialSpringVelocity:0.6 options:7 animations:^{
