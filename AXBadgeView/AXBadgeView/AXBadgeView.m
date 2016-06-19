@@ -72,11 +72,15 @@ typedef NS_ENUM(NSUInteger, AXAxis)
     _hideOnZero = YES;
     _scaleContent = NO;
     _minSize = CGSizeMake(12.0, 12.0);
+    /*
     [self addObserver:self forKeyPath:@"text" options:NSKeyValueObservingOptionNew context:nil];
+     */
 }
 
 - (void)dealloc {
+    /*
     [self removeObserver:self forKeyPath:@"text"];
+     */
 }
 
 #pragma mark - Override
@@ -84,30 +88,7 @@ typedef NS_ENUM(NSUInteger, AXAxis)
 {
     if ([keyPath isEqualToString:@"text"]) {
         NSString *text = [change objectForKey:NSKeyValueChangeNewKey];
-        if (_hideOnZero) {
-            switch (_style) {
-                case AXBadgeViewNumber:
-                    if ([text integerValue] == 0) {
-                        self.hidden = YES;
-                    } else {
-                        self.hidden = NO;
-                    }
-                    break;
-                case AXBadgeViewText:
-                    if ([text isEqualToString:@""]) {
-                        self.hidden = YES;
-                    } else {
-                        self.hidden = NO;
-                    }
-                    break;
-                case AXBadgeViewNew:
-                    break;
-                default:
-                    break;
-            }
-        } else {
-            self.hidden = NO;
-        }
+        [self updateTextIfNeededWithText:text];
     }
 }
 
@@ -161,6 +142,7 @@ typedef NS_ENUM(NSUInteger, AXAxis)
             [super setText:@""];
             break;
     }
+    [self updateTextIfNeededWithText:[super text]];
     [self sizeToFit];
     self.layer.cornerRadius = CGRectGetHeight(self.bounds)/2;
     self.layer.masksToBounds = YES;
@@ -193,6 +175,11 @@ typedef NS_ENUM(NSUInteger, AXAxis)
 
 - (BOOL)isVisible {
     return self.superview && !self.hidden && self.alpha != 0 ? YES : NO;
+}
+
+- (NSString *)text {
+    [self updateTextIfNeededWithText:[super text]];
+    return [super text];
 }
 
 #pragma mark - Setters
@@ -286,6 +273,33 @@ typedef NS_ENUM(NSUInteger, AXAxis)
 }
 
 #pragma mark - Private
+- (void)updateTextIfNeededWithText:(NSString *)text {
+    if (_hideOnZero) {
+        switch (_style) {
+            case AXBadgeViewNumber:
+                if ([text integerValue] == 0) {
+                    self.hidden = YES;
+                } else {
+                    self.hidden = NO;
+                }
+                break;
+            case AXBadgeViewText:
+                if ([text isEqualToString:@""]) {
+                    self.hidden = YES;
+                } else {
+                    self.hidden = NO;
+                }
+                break;
+            case AXBadgeViewNew:
+                break;
+            default:
+                break;
+        }
+    } else {
+        self.hidden = NO;
+    }
+}
+
 - (void)updateConstraintsOfSelfIfNeeded {
     if (self.superview) {
         CGFloat positionX = _position.x;
