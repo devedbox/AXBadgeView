@@ -23,7 +23,8 @@
     [_showsView showBadge:YES];
     _showsView.badgeView.animation = AXBadgeViewAnimationScale;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        _showsView.badgeView.offsets = CGPointMake(50, 0);
+        _showsView.badgeView.position = CGPointMake(0.5, 1);
+        _showsView.badgeView.offsets = CGPointMake(50, -50);
         _showsView.badgeView.style = AXBadgeViewNew;
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             _heightConstant.constant = 50;

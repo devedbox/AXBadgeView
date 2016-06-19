@@ -42,8 +42,10 @@ typedef NS_ENUM(NSUInteger, AXBadgeViewAnimation)
 @property(assign, nonatomic) AXBadgeViewStyle style UI_APPEARANCE_SELECTOR;
 /// Animation type of badge view. Defaults to None.
 @property(assign, nonatomic) AXBadgeViewAnimation animation UI_APPEARANCE_SELECTOR;
-/// Offsets, Defaults to (CGFLOAT_MAX, CGFLOAT_MIN).
+/// Offsets, Defaults to (0, 0).
 @property(assign, nonatomic) CGPoint offsets UI_APPEARANCE_SELECTOR;
+/// Position, between [0, 1],Default is (1, 0).
+@property(assign, nonatomic) CGPoint position UI_APPEARANCE_SELECTOR;
 /// Hide on zero content. Defaults to YES
 @property(assign, nonatomic) BOOL hideOnZero;
 /// Min size. Defaults to {12.0, 12.0}.

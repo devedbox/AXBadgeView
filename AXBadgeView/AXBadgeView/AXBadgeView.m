@@ -64,7 +64,8 @@ typedef NS_ENUM(NSUInteger, AXAxis)
     self.backgroundColor = [UIColor redColor];
     self.textColor = [UIColor whiteColor];
     self.textAlignment = NSTextAlignmentCenter;
-    _offsets = CGPointMake(CGFLOAT_MAX, CGFLOAT_MIN);
+    _offsets = CGPointMake(0, 0);
+    _position = CGPointMake(1, 0);
     _textStorage = @"";
     self.style = AXBadgeViewNormal;
     self.animation = AXBadgeViewAnimationNone;
@@ -224,33 +225,13 @@ typedef NS_ENUM(NSUInteger, AXAxis)
 - (void)setOffsets:(CGPoint)offsets {
     _offsets = offsets;
     
-    if (self.superview) {
-        CGFloat centerXConstant = _offsets.x;
-        CGFloat centerYConstant = _offsets.y;
-        if ([self.superview.constraints containsObject:_horizontalLayout]) {
-            [self.superview removeConstraint:_horizontalLayout];
-        }
-        if ([self.superview.constraints containsObject:_verticalLayout]) {
-            [self.superview removeConstraint:_verticalLayout];
-        }
-        if (centerXConstant == CGFLOAT_MIN || centerXConstant == 0.0) {
-            _horizontalLayout = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.superview attribute:NSLayoutAttributeLeft multiplier:1.0 constant:0.0];
-        } else if (centerXConstant == CGFLOAT_MAX || centerXConstant == CGRectGetWidth(self.superview.bounds)) {
-            _horizontalLayout = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.superview attribute:NSLayoutAttributeRight multiplier:1.0 constant:0.0];
-        } else {
-            _horizontalLayout = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.superview attribute:NSLayoutAttributeRight multiplier:centerXConstant/CGRectGetWidth(self.superview.bounds) constant:0.0];
-        }
-        if (centerYConstant == CGFLOAT_MIN || centerYConstant == 0.0) {
-            _verticalLayout = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.superview attribute:NSLayoutAttributeTop multiplier:1.0 constant:0.0];
-        } else if (centerYConstant == CGFLOAT_MAX || centerYConstant == CGRectGetHeight(self.superview.bounds)) {
-            _verticalLayout = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.superview attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0.0];
-        } else {
-            _verticalLayout = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.superview attribute:NSLayoutAttributeBottom multiplier:centerYConstant/CGRectGetHeight(self.superview.bounds) constant:0.0];
-        }
-        [self.superview addConstraint:_horizontalLayout];
-        [self.superview addConstraint:_verticalLayout];
-        [self.superview setNeedsLayout];
-    }
+    [self updateConstraintsOfSelfIfNeeded];
+}
+
+- (void)setPosition:(CGPoint)position {
+    _position = position;
+    
+    [self updateConstraintsOfSelfIfNeeded];
 }
 
 - (void)setMinSize:(CGSize)minSize {
@@ -305,6 +286,36 @@ typedef NS_ENUM(NSUInteger, AXAxis)
 }
 
 #pragma mark - Private
+- (void)updateConstraintsOfSelfIfNeeded {
+    if (self.superview) {
+        CGFloat positionX = _position.x;
+        CGFloat positionY = _position.y;
+        
+        if ([self.superview.constraints containsObject:_horizontalLayout]) {
+            [self.superview removeConstraint:_horizontalLayout];
+        }
+        if ([self.superview.constraints containsObject:_verticalLayout]) {
+            [self.superview removeConstraint:_verticalLayout];
+        }
+        if (positionX == 0.0) {
+            _horizontalLayout = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.superview attribute:NSLayoutAttributeLeft multiplier:1.0 constant:_offsets.x];
+        } else if (positionX == 1.0) {
+            _horizontalLayout = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.superview attribute:NSLayoutAttributeRight multiplier:1.0 constant:_offsets.x];
+        } else {
+            _horizontalLayout = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.superview attribute:NSLayoutAttributeRight multiplier:positionX constant:_offsets.x];
+        }
+        if (positionY == 0.0) {
+            _verticalLayout = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.superview attribute:NSLayoutAttributeTop multiplier:1.0 constant:_offsets.y];
+        } else if (positionY == 1.0) {
+            _verticalLayout = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.superview attribute:NSLayoutAttributeBottom multiplier:1.0 constant:_offsets.y];
+        } else {
+            _verticalLayout = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.superview attribute:NSLayoutAttributeBottom multiplier:positionY constant:_offsets.y];
+        }
+        [self.superview addConstraint:_horizontalLayout];
+        [self.superview addConstraint:_verticalLayout];
+        [self.superview setNeedsLayout];
+    }
+}
 /**
  *  breathing forever
  *
